@@ -1,0 +1,21 @@
+# --- R Specific ---
+# 実行時の作業スペース（データの中身が含まれるため、共有すべきではない）
+.RData
+.RDataTmp
+
+# 実行したコマンドの履歴
+.Rhistory
+
+# RStudioのユーザー個別の設定（開いているファイルの情報など）
+.Rproj.user/
+
+# --- Environment (renv) ---
+# ライブラリの実体は重いため除外。
+# ただし renv.lock や activate.R は管理に含める必要がある。
+renv/library/
+renv/python/
+renv/staging/
+
+# --- OS Specific ---
+# macOS特有のシステムファイル
+.DS_Store
