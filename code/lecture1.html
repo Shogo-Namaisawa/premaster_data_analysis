@@ -560,6 +560,85 @@ g</code></pre>
 ## [2,]    1    2    3
 ## [3,]    1    2    3</code></pre>
 </div>
+<div id="リスト" class="section level3">
+<h3>リスト</h3>
+<p>異なるデータ構造を一つのオブジェクトにまとめて扱う</p>
+<pre class="r"><code>L1 &lt;- list(c(1,2,3,4), matrix(1:4, 2), c(&quot;おっぱい&quot;, &quot;ぼいん&quot;))
+
+L1</code></pre>
+<pre><code>## [[1]]
+## [1] 1 2 3 4
+## 
+## [[2]]
+##      [,1] [,2]
+## [1,]    1    3
+## [2,]    2    4
+## 
+## [[3]]
+## [1] &quot;おっぱい&quot; &quot;ぼいん&quot;</code></pre>
+<pre class="r"><code>L1[[1]] #リストの第一成分 </code></pre>
+<pre><code>## [1] 1 2 3 4</code></pre>
+<pre class="r"><code>L1[[2]][1,2] # 第2成分の(1,2)の値</code></pre>
+<pre><code>## [1] 3</code></pre>
+<pre class="r"><code>L1[[3]][[1]] # 第3成分の1つめの値</code></pre>
+<pre><code>## [1] &quot;おっぱい&quot;</code></pre>
+<pre class="r"><code>L2 &lt;- list(Info = &quot;第一回講義&quot;, List1 = L1) # 名前付き辞書形式
+
+# 名前と各リストに格納されたデータ構造
+L2</code></pre>
+<pre><code>## $Info
+## [1] &quot;第一回講義&quot;
+## 
+## $List1
+## $List1[[1]]
+## [1] 1 2 3 4
+## 
+## $List1[[2]]
+##      [,1] [,2]
+## [1,]    1    3
+## [2,]    2    4
+## 
+## $List1[[3]]
+## [1] &quot;おっぱい&quot; &quot;ぼいん&quot;</code></pre>
+</div>
+<div id="データフレーム" class="section level3">
+<h3>データフレーム</h3>
+<pre class="r"><code># 各項目が同じ長さのベクトルを並べる
+x &lt;- data.frame(
+    # カラム名=その値
+    month=c(4,5,6,7),
+    price=c(900,1000,1100,1200),
+    quantity=c(100, 80,90,20))
+
+x</code></pre>
+<pre><code>##   month price quantity
+## 1     4   900      100
+## 2     5  1000       80
+## 3     6  1100       90
+## 4     7  1200       20</code></pre>
+<pre class="r"><code># 取り出しは行列と似ている
+
+x[2,3]</code></pre>
+<pre><code>## [1] 80</code></pre>
+<pre class="r"><code>x[,3]</code></pre>
+<pre><code>## [1] 100  80  90  20</code></pre>
+<pre class="r"><code>x$month</code></pre>
+<pre><code>## [1] 4 5 6 7</code></pre>
+<pre class="r"><code>rownames(x) # 行名の表示</code></pre>
+<pre><code>## [1] &quot;1&quot; &quot;2&quot; &quot;3&quot; &quot;4&quot;</code></pre>
+<pre class="r"><code>rownames(x) &lt;- c(&quot;Apr&quot;,&quot;May&quot;,&quot;Jun&quot;,&quot;Jul&quot;) # 行名の変更
+
+x</code></pre>
+<pre><code>##     month price quantity
+## Apr     4   900      100
+## May     5  1000       80
+## Jun     6  1100       90
+## Jul     7  1200       20</code></pre>
+<pre class="r"><code>colnames(x) #列名のひょうじ</code></pre>
+<pre><code>## [1] &quot;month&quot;    &quot;price&quot;    &quot;quantity&quot;</code></pre>
+<pre class="r"><code>x[&quot;Apr&quot;, &quot;price&quot;]</code></pre>
+<pre><code>## [1] 900</code></pre>
+</div>
 </div>
 </div>
 
