@@ -360,6 +360,8 @@ display: none;
 <div id="第4回" class="section level1">
 <h1>第4回</h1>
 <p>ファイルのデータ読み書き、データ整理、データプロット</p>
+<div id="データ読み込み" class="section level2">
+<h2>4-1：データ読み込み</h2>
 <div id="csv形式のデータ操作" class="section level3">
 <h3>csv形式のデータ操作</h3>
 <ul>
@@ -410,6 +412,43 @@ head(kikou)</code></pre>
 <pre><code>## [1] 366   6</code></pre>
 <pre class="r"><code>colnames(kikou)</code></pre>
 <pre><code>## [1] &quot;月&quot;     &quot;日&quot;     &quot;気温&quot;   &quot;降水量&quot; &quot;日射量&quot; &quot;風速&quot;</code></pre>
+<pre class="r"><code>str(kikou)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    366 obs. of  6 variables:
+##  $ 月    : int  1 1 1 1 1 1 1 1 1 1 ...
+##  $ 日    : int  1 2 3 4 5 6 7 8 9 10 ...
+##  $ 気温  : num  7.5 7.3 9.3 9.2 10.9 8.9 8.7 6.8 7.3 7.9 ...
+##  $ 降水量: num  0 0 0 0 0 0 0 0 0 0 ...
+##  $ 日射量: num  11.8 11.6 10.8 11.2 10.6 ...
+##  $ 風速  : num  2.6 1.9 1.4 1.6 1.8 1.9 2.5 1.8 2.1 2.2 ...</code></pre>
+</div>
+<div id="rdata-形式の操作" class="section level3">
+<h3>RData 形式の操作</h3>
+<ul>
+<li>データフレーム単一のデータだけではなく、その時に作成した関数や途中の計算結果なども含めて、作業の状態そのものをパッケージ化して保存・再現できる</li>
+<li><code>save()</code> で.rdataの拡張子で保存するう</li>
+<li><code>load()</code> で.rdataの拡張子を呼び出す</li>
+</ul>
+<pre class="r"><code>mydata1 &lt;- subset(airquality, Temp&gt;95, select = -Ozone)
+mydata2 &lt;- subset(airquality, Temp&lt;60, select = -Ozone)
+
+dim(mydata1)</code></pre>
+<pre><code>## [1] 2 5</code></pre>
+<pre class="r"><code>dim(mydata2)</code></pre>
+<pre><code>## [1] 8 5</code></pre>
+<pre class="r"><code># 二つのdfをひとまとめに保存
+# save(mydata1, mydata2, file = &quot;../data/mydata.rdata&quot;)
+
+loaded_objects &lt;- load(&quot;../data/mydata.rdata&quot;, verbose = TRUE)</code></pre>
+<pre><code>## Loading objects:
+##   mydata1
+##   mydata2</code></pre>
+<pre class="r"><code># または戻り値を格納して確認する
+loaded_objects</code></pre>
+<pre><code>## [1] &quot;mydata1&quot; &quot;mydata2&quot;</code></pre>
+</div>
+</div>
+<div id="データ整理" class="section level2">
+<h2>4-2：データ整理</h2>
 </div>
 </div>
 

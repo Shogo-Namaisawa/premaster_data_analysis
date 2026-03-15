@@ -9,6 +9,8 @@ output: html_document
 
 ファイルのデータ読み書き、データ整理、データプロット
 
+## 4-1：データ読み込み
+
 ### csv形式のデータ操作
 
 - 書き出しは、関数 write.csv( ) を用いる．指定しない限り作業ディレクトリ下に保存される
@@ -49,14 +51,37 @@ head(kikou)
 dim(kikou)
 
 colnames(kikou)
+
+str(kikou)
+```
+
+### RData 形式の操作
+
+- データフレーム単一のデータだけではなく、その時に作成した関数や途中の計算結果なども含めて、作業の状態そのものをパッケージ化して保存・再現できる
+- `save()` で.rdataの拡張子で保存するう
+- `load()` で.rdataの拡張子を呼び出す
+
+```{r}
+mydata1 <- subset(airquality, Temp>95, select = -Ozone)
+mydata2 <- subset(airquality, Temp<60, select = -Ozone)
+
+dim(mydata1)
+dim(mydata2)
 ```
 
 
+```{r}
+# 二つのdfをひとまとめに保存
+# save(mydata1, mydata2, file = "../data/mydata.rdata")
 
+loaded_objects <- load("../data/mydata.rdata", verbose = TRUE)
 
+# または戻り値を格納して確認する
+loaded_objects
 
+```
 
-
+## 4-2：データ整理
 
 
 
