@@ -37,23 +37,7 @@ newfile <- read.csv(file="../data/mydata.csv", row.names = 1)
 head(newfile)
 ```
 
-### 気象庁の東京都の気象データもよみ
 
-```{r}
-#fileEncoding = "sjis"で文字コードをshift-JISでエンコード
-kikou <- read.csv("../data/kikou2016.csv", fileEncoding = "sjis")
-
-head(kikou)
-```
-
-
-```{r}
-dim(kikou)
-
-colnames(kikou)
-
-str(kikou)
-```
 
 ### RData 形式の操作
 
@@ -83,71 +67,148 @@ loaded_objects
 
 ## 4-2：データ整理
 
+### 気象庁の東京都の気象データもよみ
 
+```{r}
+#fileEncoding = "sjis"で文字コードをshift-JISでエンコード
+kikou <- read.csv("../data/kikou2016.csv", fileEncoding = "sjis")
 
+head(kikou)
+```
 
 
+```{r}
+dim(kikou)
 
+colnames(kikou)
 
+str(kikou)
+```
 
+### 基本統計量を組み込み関数で
 
+```{r}
+kion <- kikou$気温
 
+mean(kion)
+max(kion)
+min(kion)
+```
 
+### 行列やdfの列ごとに統計量を取り出したいね
 
+```{r}
+x <- matrix(1:100, 4, 25)
 
+x
+```
 
+```{r}
+sum(x)
 
+# 行ごとの総和
+rowSums(x)
+```
 
+### apply()で行列計算を便利に
 
+#### apply(X, MARGIN, FUN)
 
+- 引数 X にデータフレームを指定
+- MARGIN には行ごとは 1 を, 列ごとの計算には 2 を指定
+- 引数 FUN には求めたい統計量を計算する関数を指定
+- xがベクトルなら**sapply()**なら列指定
 
+```{r}
+# rowSums(x)と同じ
+apply(x, 1, "sum")
+```
+- 気候データの例
 
+```{r}
+x <- subset(kikou, select = -c(月, 日))
 
+head(x)
+```
 
+```{r}
+colMeans(x)
 
+apply(x, 2, "mean")
 
+# 引数指定なければ列指定
+sapply(x, "mean")
+```
 
+- 自作関数の適用
 
+```{r}
+# 列ごとの平均より多いデータの合計値
+apply(x, 2, function(x) sum(x>mean(x)))
+```
 
+### aggregate()  データフレームの各行をいくつかのグループにまとめて統計量を計算
 
+#### aggregate(x, by, FUN)
 
+- 引数 x にデータフレームを指定し
+- by に各行が属するグループを指定、ベクトルをリストで与える (複数可). 
+- 引数 FUN には求めたい統計量を計算するための関数を指定
+- x がベクトルの場合には関数 tapply( ) も利用可能
 
+```{r}
+kikou <- read.csv("../data/kikou2016.csv", fileEncoding ="sjis")
 
+head(kikou)
+```
+### 実行例
 
+```{r}
+# 1-2列目以外のすべての行を月ごとのグループに分けて、平均を求める
+# やっているは月ごとの平均気温とか風速をもとめてる
+aggregate(kikou[ , -(1:2)], by = list(月 = kikou$月), FUN = "mean")
+```
 
+```{r}
+# やっているのは１個上と同じだっけどこういうのもあるよね
+aggregate( . ~月, data = subset(kikou, select = -日), FUN = "mean")
+```
 
+### グループを二段階
 
+- 月と降水の有無に依るグルーピング(12*2)
 
+```{r}
+aggregate(kikou[ , -(1:2)], FUN = "mean", by = list(月 = kikou$月, 降水の有無 = (kikou$降水量 > 0)))
+```
 
 
+## 演習4.1
 
+Rの組込データセット airquality について、月日以外の変数ごとに平均,最大値および最小値を、月ごとの平均、最大値および最小値を求めよ。ただし、NAは除去して計算する
 
+```{r}
+a <- airquality
 
+colnames(a)
+```
 
+- 月日以外の変数ごとに平均,最大値および最小値
 
+```{r}
+apply(a, 2, "max", na.rm = TRUE)
+apply(a, 2, "min", na.rm = TRUE)
+```
 
+- 月ごとの平均、最大値および最小値
 
+```{r}
+aggregate(a, by = list(月 = a$Month), FUN = "max", na.rm = TRUE)
+aggregate(a, by = list(月 = a$Month), FUN = "min", na.rm = TRUE)
+aggregate(a, by = list(月 = a$Month), FUN = "mean", na.rm = TRUE)
+```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+## 4-3 : データプロット
 
 
 
