@@ -112,8 +112,10 @@ rowSums(x)
 
 ### apply()で行列計算を便利に
 
-#### apply(X, MARGIN, FUN)
-
+``` 
+R
+ apply(X, MARGIN, FUN)
+``` 
 - 引数 X にデータフレームを指定
 - MARGIN には行ごとは 1 を, 列ごとの計算には 2 を指定
 - 引数 FUN には求めたい統計量を計算する関数を指定
@@ -149,7 +151,10 @@ apply(x, 2, function(x) sum(x>mean(x)))
 
 ### aggregate()  データフレームの各行をいくつかのグループにまとめて統計量を計算
 
-#### aggregate(x, by, FUN)
+``` 
+R
+ aggregate(x, by, FUN)
+``` 
 
 - 引数 x にデータフレームを指定し
 - by に各行が属するグループを指定、ベクトルをリストで与える (複数可). 
@@ -210,10 +215,103 @@ aggregate(a, by = list(月 = a$Month), FUN = "mean", na.rm = TRUE)
 
 ## 4-3 : データプロット
 
+### 基本書式 (ベクトルの描画)
 
+``` 
+R
+ plot(x, type = "p", xlim = NULL, ylim = NULL, main =NULL, xlab = NULL, ylab = NULL, ...)
 
+``` 
+- x: ベクトル
+- type: 描画タイプ. デフォルトは"p" (点プロット). 他に"l" (折れ線プロット) などがある
+- xlim: x 軸の範囲. デフォルトでは自動的に決定
+- ylim: y 軸の範囲. デフォルトでは自動的に決定
+- main: 図のタイトル. デフォルトではなし
+- xlab: x 軸のラベル名. デフォルトでは Index となる
+- ylab: y 軸のラベル名. デフォルトでは x のオブジェクト名
+- 他のオプション. 詳細は help(par) 参照 
 
+### ベクトルのプロット
 
+```{r}
+plot(1:10)
+```
+
+### 疑似データの作成
+
+```{r}
+# 0から4pi（周期2回分の波に相当）までの連続した数値を、0.1刻みで生成して変数xに格納
+x <- seq(0,4*pi, by=0.1)
+# 第1引数のデータ（今回は-0.2と0.1）を、第2引数で指定した長さ（今回はxの要素数）になるまで繰り返し
+y <- sin(x) + rep_len(c(-0.2, 0.1), length(x))
+
+plot(sin, 0, 4*pi,
+     col="blue",
+     lwd=2,
+     ylab = "sin/cos")
+curve(cos,
+      add = TRUE,
+      col="red",
+      lwd=2)
+points(x,y,col="green",pch="*")
+```
+### (x,y)データの描画
+
+```{r}
+plot(x,y,type="p",pch="x",ylim=c(-2,2))
+curve(sin, add=TRUE, col="orange",lwd=2)
+lines(x,y,col="blue")
+```
+
+### 読み込んだdfを用いて
+
+```{r}
+plot(Ozone ~ Wind, data=airquality, pch = "*", col="red",cex=2)
+```
+
+### 演習4.2
+
+Rの組込データセット sleep データ (睡眠薬投与による睡眠時間の増減のデータ・詳細は help(sleep) 参照)において, group が1のデータの extra を×軸, group が2のデータのextraをy軸とした散布図を描画せよ、ただし、点の色は青,点の形は×とし、タイトルを Sleep data, × 軸のラベルを group 1, y 軸のラベルを group 2とせよ(適宜インターネット上の情報を参照せよ、また、x軸, y 軸のデータはそれぞれ以下としてつくるとよい
+
+```
+R
+ x <- subset (sleep, group 1, extra, drop = TRUE)
+ y <- subset (sleep, group == 2, extra, drop = TRUE)
+``` 
+
+```{r}
+x <- subset (sleep, group == 1, extra, drop = TRUE)
+y <- subset (sleep, group == 2, extra, drop = TRUE)
+
+plot(x,y,
+     col="blue",
+     pch="*",
+     main="Sleep data",
+     xlab="group 1",
+     ylab="group")
+
+```
+
+### legend()で凡例を追加
+
+```{r}
+f <- function(x) exp(-x)*cos(x)
+plot(f, 0,2*pi,
+     col="red",
+     lwd=2)
+
+g <- function(x) exp(-x)*sin(x)
+curve(g, lty=2, #点線グラフに指定
+      add=TRUE,
+      col="blue",
+      lwd=2)
+legend(4,1, # (4,1)の
+       legend=c(expression(e^{-x}*cos(x), e^{-x}*sin(x))), # 凡例
+       lty = c(1,2), lwd=2, col = c("red", "blue"),
+       bty="n",
+       y.intersp = 2 #行間
+       )
+```
 
 
 
