@@ -6,3 +6,134 @@ output: html_document
 ---
 
 # 第4回
+
+ファイルのデータ読み書き、データ整理、データプロット
+
+### csv形式のデータ操作
+
+- 書き出しは、関数 write.csv( ) を用いる．指定しない限り作業ディレクトリ下に保存される
+- 読み込みは，関数 read.csv( ) を用いる．指定しない限り, 作業ディレクトリにある必要がある
+
+### デフォのairqualityをcsvファイルにして、dataディレクトリに
+
+```{r}
+mydata <- subset(airquality, Ozone > 90, select = -Temp)
+
+dim(mydata)
+
+# ディレクトリの確認
+getwd()
+```
+
+```{r}
+#書き出し
+#write.csv(mydata,file = "../data/mydata.csv")
+
+# 読み込みrow.names = 1は1列目はidだよ～ん
+newfile <- read.csv(file="../data/mydata.csv", row.names = 1)
+
+head(newfile)
+```
+
+### 気象庁の東京都の気象データもよみ
+
+```{r}
+#fileEncoding = "sjis"で文字コードをshift-JISでエンコード
+kikou <- read.csv("../data/kikou2016.csv", fileEncoding = "sjis")
+
+head(kikou)
+```
+
+
+```{r}
+dim(kikou)
+
+colnames(kikou)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
