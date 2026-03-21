@@ -1,0 +1,243 @@
+---
+title: "lecture5"
+author: "SHOGO NAMAISAWA"
+date: "2026-03-21"
+output: html_document
+---
+
+# 第五回講義
+
+## 基本的な描画のつづき
+
+- ヒストグラム
+- 箱ヒゲ
+- 棒グラフ
+- 円グラフ
+- 散布図行列
+- 3次元グラフ
+- plot環境設定
+
+### 5-1 日本語フォントの文字化け対策
+
+```{r}
+# コンソールで実行する
+par(family="HiraginoSans-W4")
+kikou <- read.csv("../data/kikou2016.csv", fileEncoding = "sjis")
+```
+
+```{r}
+# 月ごとの平均
+x <- aggregate(kikou[-c(1,2)], by = list(月 = kikou$月), FUN="mean")
+x
+```
+
+```{r}
+# fontを日本語対応
+par(family = "HiraginoSans-W4")
+plot(x$気温, type="b", lwd=3, col="green", ylim=c(0, max(x$気温)), xlab="月", ylab="", main = "2016年気候データ")
+axis(1,1:12,1:12)
+axis(2)
+lines(x$降水量, type="h", lwd=3, col="blue")
+lines(x$日射量, lwd=3, lty=2, col="red")
+abline(0, 0, lwd = 2, lty = "dotted")
+legend(1,25, legend = c("気温", "降水量", "日射量"),
+       col= c("green", "blue", "red"),
+       lwd = 3,
+       lty=c(1,1,2))
+```
+
+### 5-2 ヒストグラム
+
+```{r}
+par(family = "HiraginoSans-W4")
+hist(kikou$気温)
+```
+
+```{r}
+par(family = "HiraginoSans-W4")
+hist(kikou$気温, xlab="", ylab = "頻度",
+     breaks = 25, # 瓶のカズを約25に
+     labels = TRUE, # bins上に値表示
+     col="green",
+     main="2016年の気温のヒストグラム")
+```
+
+```{r}
+par(family = "HiraginoSans-W4")
+hist(kikou$風速, freq= FALSE, # 全体に対する割合で表示
+      xlab="", ylab="密度", breaks=25, col="lightblue",border="lightblue",# 境界の色
+      main="2016風速ヒストグラム")
+```
+
+```{r}
+# Weyl の一様分布定理の確認
+# a が無理数のとき, 数列 a, 2a, 3a, ... の小数部分は区間 (0,1) 上に均一に現れる
+a <- pi
+n <- 1000
+x <- (1:n)*a
+x <- x-floor(x) # 小数部分の計算 (floor はいわゆる Gauss 記号)
+hist(x, breaks = 20)
+```
+
+### 5-3 箱ヒゲ
+```{r}
+par(family = "HiraginoSans-W4")
+boxplot(kikou[,-c(1,2)])
+```
+
+```{r}
+par(family = "HiraginoSans-W4")
+boxplot(気温 ~ 月, data = kikou, col="orange", main = "月ごとの気温")
+```
+
+```{r}
+par(family = "HiraginoSans-W4")
+boxplot(気温 ~ 月, data = kikou, col="purple", main = "月ごとの気温", horizontal = T)
+```
+
+### 5-4 棒グラフ
+
+barplot( ) の第 1 引数はベクトルまたは行列でなければならないことに注意すること.
+
+```{r}
+par(family = "HiraginoSans-W4")
+x <- aggregate(kikou[,-c(1,2)], by=list(月=kikou$月), FUN = "mean")
+
+barplot(as.matrix(x[,-1]),
+        col=rainbow(12)[c(8:1,12:9)],
+        beside=T, # 棒グラフを横に並べる
+        space=c(1.5, 3), # 棒グラフ間、変数間スペースを指定
+        legend.text = paste0(x[,1], "月"), # 凡例を指定
+        args.legend = list(ncol=2)# 凡例2例にして
+        )
+```
+
+### 5-5 円グラフ
+
+```{r}
+z <- hist(kikou$日射量, breaks = 5, plot=F)# 日射量を5分割
+x <- z$count
+y <- z$breaks
+
+names(x) <- paste(y[-length(y)], y[-1], sep="-")
+pie(x, col=gray(seq(0,1, length=length(x))))
+```
+
+### 5-6 散布図行列
+
+- `pairs()`多次元データの変数間の関係を概観するために，2 つの変数間の散布図を複数行列状に並べた図
+
+```{r}
+par(family = "HiraginoSans-W4")
+pairs(kikou[,-c(1,2)], col="blue")
+```
+
+```{r}
+# 月毎で異なる色で表示
+par(family = "HiraginoSans-W4")
+pairs(~気温 + 日射量 + 風速, data=kikou,
+      col=topo.colors(12)[kikou$月])
+```
+
+### 5-7 3次元グラフ
+
+- 3 次元のグラフを 2 次元に射影した俯瞰図は，関数 persp( ) を用いて描くことができる．
+- 視線の方向はオプション theta と phi で極座標を指定することによって制御することができる．
+- パッケージ scatterplot3d には, 3 次元の散布図を書くための関数 scatterplot3d( ) が用意されている.
+
+```{r}
+f <- function(x,y) x^2 - y^2
+x <- seq(-3,3, length=51) # xの定義域の分割
+y <- seq(-3,3, length=51)
+z <- outer(x,y,f)
+
+persp(x,y,z, col="lightblue")
+```
+
+```{r}
+# 極座標を指定
+persp(x,y,z, theta=30, phi=30, expand=0.5, col = "royalblue", main = expression(z==x^2 - y^2))
+```
+
+```{r}
+# 3次元散布図(パッケscatterplot3dを利用)
+
+# install.packages("scatterplot3d")
+library(scatterplot3d)
+```
+
+```{r}
+par(family = "HiraginoSans-W4")
+
+dat <- subset(kikou, select = c("風速", "日射量", "気温"))
+scatterplot3d(dat, pch=4, color="orchid", cex.symbols = 1.5)
+```
+
+### 5-8 プロット環境設定
+関数 par( ) によってプロット環境の設定 (複数図の配置, 余白の設定)ができる.
+
+```{r}
+par(family = "HiraginoSans-W4")
+
+# 画面を2*2二分割し、行毎にプロット
+# par(mfcol = c(2,2)) で列ごとにプロットできる
+op <- par(mfrow=c(2,2)) 
+
+# 色を容易
+cl <- terrain.colors(4)
+
+# ヒストグラムを作成する変数
+nam <- colnames(kikou)[-c(1:2)]
+
+# 第1変数のヒストグラム
+hist(kikou[,nam[1]], col=cl[1], breaks=25, xlab="", main=paste0(nam[1], "のヒストグラム"))
+
+# 第2変数のヒストグラム
+hist(kikou[,nam[2]], col=cl[2], breaks=25, xlab="", main=paste0(nam[2], "のヒストグラム"))
+
+# 上のように一個ずつやるのはだるいからfor文で回すのが吉
+for (i in 3:4){
+  hist(kikou[,nam[i]], col=cl[i], breaks=25, xlab="", main=paste0(nam[i], "のヒストグラム"))
+}
+
+par(op)
+```
+
+```{r}
+par(family = "HiraginoSans-W4")
+
+op0 <- par(mfrow= c(1,2))
+plot(kikou[,3:4])
+
+# 下・左・上・右の順で余白を設定
+op<- par(mar = c(9,2,1,6))
+plot(kikou[,3:4])
+# 横に並べて表示
+par(op0);par(op)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
